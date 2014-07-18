@@ -1,0 +1,24 @@
+# Maven generated files
+target/
+
+# Compiled files
+*.class
+
+# Packages
+*.jar
+*.zip
+
+# Eclipse files
+*.classpath
+*.project
+*.settings
+.checkstyle
+
+# IntelliJ IDEA files
+.idea/
+*.iml
+/.metadata
+/Servers
+
+
+
