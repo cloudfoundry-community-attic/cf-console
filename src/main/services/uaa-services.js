@@ -4,6 +4,7 @@ nconf.argv().env();
 nconf.file({ file: __dirname + '/../config/cf-console-config.json' });
 var APPLICATION_KEY = 'Basic ' + new Buffer(nconf.get("credentials:username") + ":" + nconf.get("credentials:password")).toString('base64');
 
+//TODO add exception handling
 module.exports = {
         login: function*(form) {
             var info = yield request({

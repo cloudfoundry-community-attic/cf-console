@@ -54,6 +54,19 @@ app.use(route.post('/login', function *(next) {
     this.redirect('/users/' + authDetails.user.user_id);
 }));
 
+app.use(route.get('/login', function *(next) {
+    yield this.render('cf-login');
+}));
+
+app.use(route.get('/logout', function *(next) {
+    this.cookies.set('authDetails', "{}");
+    this.redirect('/login');
+}));
+
+app.use(route.get('/users/:id', function*(next){
+    yield this.render('cf-console');
+}));
+
 app.use(function *() {
     this.status = 404;
     yield this.render('not_found');
