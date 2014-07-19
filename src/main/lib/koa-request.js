@@ -1,3 +1,11 @@
+/**
+ * A fork of https://github.com/dionoid/koa-request and https://github.com/koajs/logger
+ *
+ * Simple adjustments to add logging for api requests, however it has to be seen whether or not this provides any actual benefit :)
+ *
+ * Might have to mark the request with a unique number to be able to track the request in case of problems.
+ */
+
 var _request = require('request'), humanize = require('humanize-number');
 
 var colors = {
