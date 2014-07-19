@@ -1,0 +1,10 @@
+{
+    "credentials" : {
+        "username" : "styx",
+        "password" : "styxsecret"
+    },
+    "endpoints" : {
+        "uaa" : "http://uaa.cf.eden.klm.com",
+        "api" : "http://api.cf.eden.klm.com/v2"
+    }
+}

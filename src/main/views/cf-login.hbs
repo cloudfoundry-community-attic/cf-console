@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>CloudFoundry Console</title>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/cf-console.css">
+    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Italiana&amp;subset=latin">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+</head>
+<body style="margin-top: 50px;">
+
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="jumbotron text-center">
+            <div class="row">
+                <div class="col-sm-7">
+                    <div id="logo">Cronus</div>
+                    <p>Welcome to the CloudFoundry console, please log in.</p>
+                </div>
+                <div class="col-sm-5">
+                    <div style="margin-top: 75px;">
+                        <form class="form-horizontal" role="form" action="login" method="post">
+                            <div class="form-group">
+                                <label for="username" class="col-sm-2 control-label">Username</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="username" name="username" placeholder="username">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="password" class="col-sm-2 control-label">Password</label>
+
+                                <div class="col-sm-10">
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-offset-2 col-sm-10">
+                                    <button type="submit" class="btn btn-info btn-block">Sign in</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    <div class="container">
+        <p class="text-muted footer-text"><a href="https://github.com/cloudfoundry-community/cf-console">cloudfoundry-community</a></p>
+    </div>
+</div>
+
+</body>
+</html>
