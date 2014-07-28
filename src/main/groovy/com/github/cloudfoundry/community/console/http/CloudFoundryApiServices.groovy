@@ -76,11 +76,10 @@ class CloudFoundryApiServices {
         final expansionRequests = collectNonDelegatedRequests(exchange, root.expansions.findAll { expandConfiguration -> expandConfiguration.expansions.size() == 0 }, token)
         final expansionExchange = httpClient.get(expansionRequests.toArray() as Closure[])
         final processedExpansions = collectDelegatedRequests(exchange, root.expansions.findAll { expandConfiguration -> expandConfiguration.expansions.size() > 0 }, token)
-
         root.expansions.each { expandConfiguration ->
             if (processedExpansions.get(expandConfiguration.path) != null) {
                 findResource(expandConfiguration, exchange, { exchangeItem ->
-                    final processedExpansionResults = processedExpansions.get(expandConfiguration.path)
+                    final processedExpansionResults = processedExpansions.get(exchangeItem.entity."${expandConfiguration.resource}_url")
                     exchangeItem.entity."${expandConfiguration.resource}" = processedExpansionResults.resources == null ? processedExpansionResults.entity : processedExpansionResults.resources
                 })
             } else {
