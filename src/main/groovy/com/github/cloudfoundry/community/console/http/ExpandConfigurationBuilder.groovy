@@ -1,8 +1,5 @@
 package com.github.cloudfoundry.community.console.http
 
-/**
- * Created by klm31131 on 28/07/14.
- */
 class ExpandConfigurationBuilder extends BuilderSupport {
 
     def expansions = []

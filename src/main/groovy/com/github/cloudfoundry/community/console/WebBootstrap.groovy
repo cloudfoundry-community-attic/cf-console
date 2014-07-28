@@ -1,6 +1,5 @@
 package com.github.cloudfoundry.community.console
 
-import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer
 import org.springframework.web.WebApplicationInitializer
 import org.springframework.web.context.ContextLoaderListener
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext

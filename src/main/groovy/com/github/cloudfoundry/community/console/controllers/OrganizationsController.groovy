@@ -37,24 +37,4 @@ class OrganizationsController {
         api.loadResource(config)
     }
 
-//    @RequestMapping(value = "/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-//    def loadOrganization(@PathVariable("id") id, @RequestParam(value = "expand", required = false) List<String> expansions){
-//        final config = ExpandConfiguration.newBuilder().root(path: "/v2/organizations/${id}"){
-//            expansions.each {
-//                if(it.contains(":")){
-//                    final resource = new StringTokenizer(it, ":")
-//                    expansion(resource: resource.nextToken()){
-//                        final subResource = new StringTokenizer(resource.nextToken(), " AND ")
-//                        while(subResource.hasMoreTokens()){
-//                            expansion(resource: subResource.nextToken())
-//                        }
-//                    }
-//                }else{
-//                    expansion(resource: it)
-//                }
-//            }
-//        }
-//        api.loadResource(config)
-//    }
-
 }
