@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
 <properties>
-    <entry key="credentials.id"></entry>
-    <entry key="credentials.secret"></entry>
-    <entry key="endpoints.uaa"></entry>
-    <entry key="endpoints.api"></entry>
+    <entry key="credentials.id">admin</entry>
+    <entry key="credentials.secret">cloudscale</entry>
+    <entry key="endpoints.uaa">https://uaa.130.83.11.169.xip.io</entry>
+    <entry key="endpoints.api">https://api.130.83.11.169.xip.io</entry>
 </properties>
