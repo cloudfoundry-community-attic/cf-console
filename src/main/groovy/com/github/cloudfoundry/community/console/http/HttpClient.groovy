@@ -12,9 +12,12 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
 
 import org.apache.http.conn.scheme.Scheme
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory
 import org.apache.http.conn.ssl.SSLSocketFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -96,9 +99,9 @@ class HttpClient {
         }
 		
 		def ignoreCertAndHostVerification() {
-			SLContext sslContext = null;
+			SSLContext sslContext = null;
 		
-			TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager(){
+			TrustManager[] trustAllCerts = { new X509TrustManager(){
 			    public X509Certificate[] getAcceptedIssuers(){ return null }
 			    public void checkClientTrusted(X509Certificate[] certs, String authType){}
 			    public void checkServerTrusted(X509Certificate[] certs, String authType){}
@@ -111,9 +114,9 @@ class HttpClient {
 			} catch (Exception e) {
 			    
 			}
-			
+			SSLSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier());
 			HttpClient httpClient = HttpClientBuilder.create()
-				.setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier());)
+				.setSSLSocketFactory(sslSocketFactory)
 				.build();
 			return new HttpComponentsClientHttpRequestFactory(httpClient);
 		}
