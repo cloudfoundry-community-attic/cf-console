@@ -5,20 +5,10 @@ import static org.apache.commons.codec.binary.Base64.encodeBase64String
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import groovy.util.logging.Slf4j
 
-import java.security.SecureRandom
-import java.security.cert.CertificateException
-import java.security.cert.X509Certificate
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.TimeUnit
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
-import org.apache.http.conn.scheme.Scheme
-import org.apache.http.conn.ssl.AllowAllHostnameVerifier
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory
-import org.apache.http.conn.ssl.SSLSocketFactory
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -27,7 +17,6 @@ import org.springframework.core.env.Environment
 import org.springframework.http.HttpEntity
 import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpMethod
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.client.HttpClientErrorException
 import org.springframework.web.client.RestTemplate
@@ -93,34 +82,9 @@ class HttpClient {
             this.authHeader = authHeader
             this.httpMethod = httpMethod
             this.restTemplate = restTemplate
-			def requestFactory = ignoreCertAndHostVerification();
-			restTemplate.setRequestFactory(requestFactory);
 			this.objectMapper = objectMapper
         }
 		
-		def ignoreCertAndHostVerification() {
-			SSLContext sslContext = null;
-		
-			TrustManager[] trustAllCerts = { new X509TrustManager(){
-			    public X509Certificate[] getAcceptedIssuers(){ return null }
-			    public void checkClientTrusted(X509Certificate[] certs, String authType){}
-			    public void checkServerTrusted(X509Certificate[] certs, String authType){}
-			}}
-	
-			try {
-			    sslContext = SSLContext.getInstance("TLS");
-			    sslContext.init(null, trustAllCerts, new SecureRandom());
-			    HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
-			} catch (Exception e) {
-			    
-			}
-			SSLSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier());
-			HttpClient httpClient = HttpClientBuilder.create()
-				.setSSLSocketFactory(sslSocketFactory)
-				.build();
-			return new HttpComponentsClientHttpRequestFactory(httpClient);
-		}
-
         def static newInstance(String authHeader, HttpMethod httpMethod, RestTemplate restTemplate, ObjectMapper objectMapper, ExecutorService pool, Closure... closures) {
             def futures = closures.collect { closure ->
                 HttpClientDsl httpClientDsl = new HttpClientDsl(authHeader, httpMethod, restTemplate, objectMapper)

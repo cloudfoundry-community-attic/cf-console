@@ -1,14 +1,22 @@
 package com.github.cloudfoundry.community.console
 
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.datatype.joda.JodaModule
-import com.github.jknack.handlebars.context.FieldValueResolver
-import com.github.jknack.handlebars.context.JavaBeanValueResolver
-import com.github.jknack.handlebars.context.MapValueResolver
-import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver
+import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY
+import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
+
+import java.util.concurrent.ExecutorService
+import java.util.concurrent.SynchronousQueue
+import java.util.concurrent.ThreadPoolExecutor
+import java.util.concurrent.TimeUnit
+
+import javax.net.ssl.HostnameVerifier
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManager
+import javax.net.ssl.X509TrustManager
+
+import org.apache.http.conn.ssl.AllowAllHostnameVerifier
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory
 import org.apache.http.impl.client.HttpClientBuilder
-import org.apache.http.impl.client.HttpClients
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
@@ -21,15 +29,13 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
-import org.springframework.web.servlet.view.UrlBasedViewResolver
 
-import java.util.concurrent.ExecutorService
-import java.util.concurrent.SynchronousQueue
-import java.util.concurrent.ThreadPoolExecutor
-import java.util.concurrent.TimeUnit
-
-import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_EMPTY
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.joda.JodaModule
+import com.github.jknack.handlebars.context.FieldValueResolver
+import com.github.jknack.handlebars.context.JavaBeanValueResolver
+import com.github.jknack.handlebars.context.MapValueResolver
+import com.github.jknack.handlebars.springmvc.HandlebarsViewResolver
 
 @Configuration
 @PropertySource("classpath:cf-console.properties.xml")
@@ -78,7 +84,36 @@ class WebConfiguration extends WebMvcConfigurerAdapter {
 
     @Bean
     def RestTemplate getRestTemplate() {
-        new RestTemplate(requestFactory: new HttpComponentsClientHttpRequestFactory(HttpClients.createDefault()))
+        new RestTemplate(requestFactory: ignoreCertAndHostVerification())
+    }
+
+    private ignoreCertAndHostVerification() {
+        SSLContext sslContext = null
+
+        def nullTrustManager = [
+                checkClientTrusted: { chain, authType ->  },
+                checkServerTrusted: { chain, authType ->  },
+                getAcceptedIssuers: { null }
+        ]
+
+        def nullHostnameVerifier = [
+                verify: { hostname, session -> true }
+        ]
+
+
+        try {
+            sslContext = SSLContext.getInstance("TLS")
+            sslContext.init(null, [nullTrustManager as X509TrustManager] as TrustManager[], null)
+            HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory())
+            HttpsURLConnection.setDefaultHostnameVerifier(nullHostnameVerifier as HostnameVerifier)
+        } catch (Exception e) {
+            e.printStackTrace()
+        }
+
+        org.apache.http.client.HttpClient httpClient = HttpClientBuilder.create()
+                .setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext, new AllowAllHostnameVerifier()))
+                .build()
+        return new HttpComponentsClientHttpRequestFactory(httpClient)
     }
 
 }
